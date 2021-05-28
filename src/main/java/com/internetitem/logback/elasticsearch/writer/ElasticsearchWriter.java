@@ -82,6 +82,12 @@ public class ElasticsearchWriter implements SafeWriter {
 				String data = slurpErrors(urlConnection);
 				throw new IOException("Got response code [" + rc + "] from server with data " + data);
 			}
+			
+			if (rc == 400) {
+				errorReporter.logInfo("Send queue cleared after - log messages will no longer be lost");
+				sendBuffer.setLength(0);
+			}
+			
 		} finally {
 			urlConnection.disconnect();
 		}
